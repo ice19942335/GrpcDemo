@@ -4,6 +4,11 @@ option csharp_namespace = "GrpcServer.Protos";
 
 service Customer {
 	rpc GetCustomerInfo (CustomerLookupModel) returns (CustomerModel);
+	rpc GetNewCustomers (NewCustomerRequest) returns (stream CustomerModel);
+}
+
+message NewCustomerRequest {
+
 }
 
 message CustomerLookupModel {
@@ -17,4 +22,3 @@ message CustomerModel {
 	bool isAlive = 4;
 	int32 age = 5;
 }
-

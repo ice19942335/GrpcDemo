@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Threading.Tasks;
+using Grpc.Core;
 using Grpc.Net.Client;
 using GrpcServer;
 using GrpcServer.Protos;
 
-namespace GrpcClient
+namespace GrpcClient 
 {
     class Program
     {
@@ -23,6 +24,21 @@ namespace GrpcClient
             var customer = await customersClient.GetCustomerInfoAsync(clientRequested);
 
             Console.WriteLine($"{customer.FirstName} {customer.LastName}");
+
+            Console.WriteLine("");
+            Console.WriteLine("New customers list:");
+            Console.WriteLine("");
+
+
+            using (var call = customersClient.GetNewCustomers(new NewCustomerRequest()))
+            {
+                while (await call.ResponseStream.MoveNext())
+                {
+                    var currentCustomer = call.ResponseStream.Current;
+
+                    Console.WriteLine($"{currentCustomer.FirstName} {currentCustomer.LastName}: {currentCustomer.EmailAddress}");
+                }
+            }
 
             Console.WriteLine("Press any key to exit...");
             Console.ReadKey();
